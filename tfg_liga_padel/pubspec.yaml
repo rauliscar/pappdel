@@ -12,6 +12,8 @@ dependencies:
   
   google_fonts: ^6.2.1    # Fuentes de Google
   provider: ^6.1.1        # Manejo de estados
+  intl: ^0.17.0           # Formateo de fechas
+  http: ^1.2.0            # Para peticiones http
 
 dev_dependencies:
   flutter_test:
@@ -20,3 +22,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  # Para añadir assets en local (Se debe crear la carpeta en la ruta correspondiente)
+  #assets:
+   # -assets/images/

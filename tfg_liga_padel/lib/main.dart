@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tfg_liga_padel/Functions/bottom_bar.dart';
 //import 'package:tfg_liga_padel/Functions/bottom_bar.dart';
-import 'package:tfg_liga_padel/Screens/home.dart';
+import 'package:tfg_liga_padel/Screens/dashboard.dart';
 import 'package:provider/provider.dart';
+import 'package:tfg_liga_padel/Screens/dashboard_sin_equipo.dart';
+import 'package:tfg_liga_padel/Screens/info_enfrentamiento.dart';
+import 'package:tfg_liga_padel/Screens/info_jugador.dart';
+import 'package:tfg_liga_padel/Screens/login.dart';
+import 'package:tfg_liga_padel/Screens/perfilUsuario.dart';
+import 'package:tfg_liga_padel/Screens/signup.dart';
 import 'package:tfg_liga_padel/Screens/info_equipo.dart';
-import 'package:tfg_liga_padel/tema/tema.dart';
+import 'package:tfg_liga_padel/Functions/tema/tema.dart';
 
 void main() {
   runApp(
-    //Cargamos en el nivel más alto de la aplicación el provider
-    //En dicho provider cargamos el tema actual
     MultiProvider(
       providers: [
           ChangeNotifierProvider(
-          //cargamos el tema claro por defecto
+          //Se carga el tema claro por defecto
           create: (_) => CargadorTema(0)),
-          //ChangeNotifierProvider(
-          //cargamos el modo de funcionamiento por defecto
-          //create: (_) => ModoTrabajo()), 
+
       ],
       child: const MainApp(),
       ),
@@ -33,8 +36,13 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: "/",
       routes: {
-        //"/": (context) => BottomNavigationBarExampleApp(0),
-        "/": (context) => const HomePage(),
+        "/": (context) => BottomBarPappdel(1),
+        //"/": (context) => const InicioSesion(),
+        "/registro": (context) => const RegistroScreen(),
+        "/dashboard": (context) => const DashboardPage(),
+        "/dashboardSinEquipo": (context) =>  DashboardSinEquipo(),
+        "/infoEquipo": (context) => const InfoEquipo(),
+        "/infoJugador": (context) => const InfoJugador(),
       },
       theme: ThemeData(
         //textTheme: GoogleFonts.robotoTextTheme(),

@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: db_name
+      MYSQL_USER: padeluser
+      MYSQL_PASSWORD: padelpassword
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  spring-app:
+    image: pappdelAPI_image:latest
+    container_name: spring-app
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/pappdelBBDD?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: padeluser
+      SPRING_DATASOURCE_PASSWORD: padelpassword
+      SPRING_PROFILES_ACTIVE: production
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql-db
+
+volumes:
+  mysql-data:

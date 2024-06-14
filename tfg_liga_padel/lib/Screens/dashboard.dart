@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:tfg_liga_padel/tema/tema.dart';
+import 'package:tfg_liga_padel/Functions/mis_widgets.dart';
+import 'package:tfg_liga_padel/Functions/tema/tema.dart';
 
-class HomePage extends StatefulWidget{
-  const HomePage({Key? key}) : super(key: key);
+class DashboardPage extends StatefulWidget{
+  const DashboardPage({Key? key}) : super(key: key);
   
   @override
   // ignore: library_private_types_in_public_api
-  _HomePageState createState() => _HomePageState();
+  _DashboardPageState createState() => _DashboardPageState();
+  
 }
 
-class _HomePageState extends State<HomePage> {
+class _DashboardPageState extends State<DashboardPage> {
 
   var height, width;
 
   @override
   Widget build(BuildContext context) {
-    final temaActual = Provider.of<CargadorTema>(context).temaActual;
+    final temaActual = Provider.of<CargadorTema>(context);
+
+    bool isDark = temaActual.temaOscuro;
 
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
@@ -25,7 +29,7 @@ class _HomePageState extends State<HomePage> {
     String nombreUsuario = "Raúl Pérez de la Calle";
 
     return Scaffold(
-      backgroundColor: temaActual.colorScheme.primary,
+      backgroundColor: temaActual.temaActual.colorScheme.secondary,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -52,10 +56,10 @@ class _HomePageState extends State<HomePage> {
                               Flexible(
                                 child: Text(
                                   nombreUsuario,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 26,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.white
+                                    color: temaActual.temaActual.colorScheme.onSecondary
                                   ),
                                 ),
                               ),
@@ -69,9 +73,9 @@ class _HomePageState extends State<HomePage> {
                               Flexible(
                                 child: Text(
                                   nombreMiEquipo,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 18,
-                                    color: Colors.white
+                                    color: temaActual.temaActual.colorScheme.onSecondary
                                   ),
                                 ),
                               ),
@@ -81,16 +85,16 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
           
-                    //Icono notificaciones
+                    //Icono cambio de tema
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
                         color: Colors.black.withOpacity(.1)
                       ),
                       child: IconButton(
-                        onPressed: () {}, 
-                        icon: const Icon(Icons.notifications),
-                        color: Colors.white),
+                        onPressed: () {temaActual.temaOscuro = !temaActual.temaOscuro;}, 
+                        icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+                        color: temaActual.temaActual.colorScheme.onSecondary),
                     )
                   ],
                 ),
@@ -98,7 +102,7 @@ class _HomePageState extends State<HomePage> {
           
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.grey[100],
+                  color: temaActual.temaActual.colorScheme.background,
                   borderRadius: const BorderRadius.only(topLeft: Radius.circular(40), topRight: Radius.circular(40))
                 ),
                 child: Column(
@@ -106,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                     Container(
                       padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                       margin: const EdgeInsets.only(top: 10.0),
-                      child: const Row(
+                      child: Row(
                         
                         children: [
                           Flexible(
@@ -115,6 +119,7 @@ class _HomePageState extends State<HomePage> {
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w900,
+                                color: temaActual.temaActual.colorScheme.onBackground
                               ),
                             ),
                           ),
@@ -125,12 +130,14 @@ class _HomePageState extends State<HomePage> {
                     // Titulo próximos partidos        
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: const Row(
+                      child: Row(
                         children: [
                           Text(
                             "Próximos partidos",
                             style: TextStyle(
+                              fontWeight: FontWeight.w500,
                               fontSize: 20,
+                              color: temaActual.temaActual.colorScheme.onBackground
                             ),
                           ),
                         ],
@@ -140,19 +147,19 @@ class _HomePageState extends State<HomePage> {
                     //Lista de los próximos partidos         
                     SizedBox(
                       //height: 180,
-                      height: height * .255,
+                      height: height * .280,
                       child: ListView(
                         padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                         scrollDirection: Axis.horizontal,
                         children: [
                             
-                          tarjetaProximoPartido("Tierra de Pinares", width),
+                          MisWidgets.tarjetaProximoPartido(context, nombreMiEquipo, "Tierra de Pinares", "17-03-2024", width, height),
                             
-                          tarjetaProximoPartido("Recuperaciones Iscar", width),
+                          MisWidgets.tarjetaProximoPartido(context,"EquipoEjemplo2", nombreMiEquipo, "17-03-2024", width, height),
                             
-                          tarjetaProximoPartido("La Despensa de Ismar", width),
+                          MisWidgets.tarjetaProximoPartido(context, nombreMiEquipo,"La Despensa de Ismar", "17-03-2024", width, height),
                       
-                          tarjetaProximoPartido("Mi Equipo", width)
+                          MisWidgets.tarjetaProximoPartido(context,"Maristas" , nombreMiEquipo, "17-03-2024", width, height)
                       
                         ],
                       ),
@@ -163,19 +170,21 @@ class _HomePageState extends State<HomePage> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 25),
                       margin: const EdgeInsets.only(top: 15),
-                      child: const Row(
+                      child: Row(
                         children: [
                           Text(
                             "Últimos partidos",
                             style: TextStyle(
+                              fontWeight: FontWeight.w500,
                               fontSize: 20,
+                              color: temaActual.temaActual.colorScheme.onBackground
                             ),
                           ),
                         ],
                       ),
                     ),
                       
-                    // //Lista de los próximos partidos         
+                    // //Lista de los partidos jugados        
                     SizedBox(
                     height: 150,
                     //height: height * .23,
@@ -184,11 +193,11 @@ class _HomePageState extends State<HomePage> {
                         scrollDirection: Axis.horizontal,
                         children: [
                             
-                          tarjetaPartidoJugado(3, 0, nombreMiEquipo, "Avisilman Pollitos"),
+                          MisWidgets.tarjetaPartidoJugado(context, width, height, 2, 0, nombreMiEquipo, "Avisilman Pollitos"),
                             
-                          tarjetaPartidoJugado(1, 2, "Recuperaciones Iscar", nombreMiEquipo),
+                          MisWidgets.tarjetaPartidoJugado(context, width, height, 1, 2, "Recuperaciones Iscar", nombreMiEquipo),
                             
-                          tarjetaPartidoJugado(2, 1, "Equipo Pruebas", nombreMiEquipo),       
+                          MisWidgets.tarjetaPartidoJugado(context, width, height, 2, 1, "Equipo Pruebas", nombreMiEquipo),       
                       
                         ],
                       ),
@@ -199,12 +208,14 @@ class _HomePageState extends State<HomePage> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 25),
                       margin: const EdgeInsets.only(top: 15),
-                      child: const Row(
+                      child: Row(
                         children: [
                           Text(
                             "Clasificación",
                             style: TextStyle(
+                              fontWeight: FontWeight.w500,
                               fontSize: 20,
+                              color: temaActual.temaActual.colorScheme.onBackground
                             ),
                           ),
                         ],
@@ -219,8 +230,9 @@ class _HomePageState extends State<HomePage> {
                           Flexible(
                             child: Text(
                               "1. $nombreMiEquipo",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 17,
+                                color: temaActual.temaActual.colorScheme.onBackground
                               ),
                             ),
                           ),
@@ -229,7 +241,6 @@ class _HomePageState extends State<HomePage> {
                     ),
         
                     const Divider(height: 40, indent: 25, endIndent: 25,),
-        
                       
                   ],
                 ),
@@ -238,142 +249,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       )
-    );
-  }
-
-  Column tarjetaPartidoJugado(int ptosLocal, int ptosVisitante, equipoLocal, equipoVisitante) {
-    Color colorGanador = const Color.fromARGB(255, 28, 116, 32);
-    return Column(
-      children: [
-    
-          DefaultTextStyle(
-            style: TextStyle(
-              fontSize: width * 0.042,
-              color: Colors.black
-            ),
-            child: Expanded(
-              //Tarjeta
-              child: Container( 
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                margin:  EdgeInsets.only(right: height * 0.02),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                width: width * .6,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                
-                    Expanded(
-                      flex: 3,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-        
-                          //Nombre del equipo local
-                          Expanded(
-                            flex: 6,
-                            child: Text(
-                              equipoLocal,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: ptosLocal > ptosVisitante ? colorGanador : const Color.fromRGBO(66, 66, 66, 1),
-                                fontWeight: ptosLocal > ptosVisitante ? FontWeight.bold : FontWeight.normal
-                              ),
-                            ),
-                          ),
-                          
-                          //Puntos del equipo local
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              margin: const EdgeInsets.only(right: 10),
-                              child: Text(
-                                "$ptosLocal",
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-              
-                    Expanded(
-                      flex: 1,
-                      child: Divider(height: height * .01, thickness: 2,)
-                    ),  
-              
-                    Expanded(
-                      flex: 3,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-        
-                          //Nombre del equipo visitante
-                          Expanded(
-                            flex: 6,
-                            child: Text(
-                              equipoVisitante,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: ptosVisitante > ptosLocal ? colorGanador : Colors.grey.shade800,
-                              ),
-                            ),
-                          ),
-        
-                          //Puntos del equipo visitante
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              margin: const EdgeInsets.only(right: 10),
-                              child: Text(
-                                "$ptosVisitante",
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    )
-                
-                  ],
-                ),
-              ),
-            ),
-          ),
-      ]
-    );
-  }
-
-  Container tarjetaProximoPartido(String nombreRival, double width) {
-    return Container(
-      margin: EdgeInsets.only(right: width * 0.04),
-      height: height * .20,
-      child: Column(
-        children: [
-      
-            Container(
-              margin: const EdgeInsets.only(bottom: 5.0),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              height: height * .16,
-              width: width * .45,
-            ),
-
-            Text(
-              "Vs $nombreRival",
-              style: const TextStyle(
-                fontSize: 15,
-              ),
-            ),
-      
-        ]
-      ),
     );
   }
 }

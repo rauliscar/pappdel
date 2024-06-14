@@ -1,14 +1,18 @@
 
 import 'package:flutter/material.dart';
-import 'package:tfg_liga_padel/Screens/home.dart';
+import 'package:provider/provider.dart';
+import 'package:tfg_liga_padel/Functions/tema/tema.dart';
+import 'package:tfg_liga_padel/Screens/dashboard.dart';
+import 'package:tfg_liga_padel/Screens/info_equipo.dart';
+import 'package:tfg_liga_padel/Screens/perfilUsuario.dart';
 
 // ignore: must_be_immutable
-class BottomNavigationBarExampleApp extends StatelessWidget {
+class BottomBarPappdel extends StatelessWidget {
 
   // Por defecto, 0
   int _selectedIndex = 0;
 
-  BottomNavigationBarExampleApp(int itemActivo, {super.key}){
+  BottomBarPappdel(int itemActivo, {super.key}){
     _selectedIndex = itemActivo;
   }
 
@@ -35,7 +39,7 @@ class BottomNavigationBarExample extends StatefulWidget {
 class _BottomNavigationBarExampleState
     extends State<BottomNavigationBarExample> {
 
-  int _index = 0;
+  int _index = 1;
 
   @override
   void initState() {
@@ -47,8 +51,9 @@ class _BottomNavigationBarExampleState
   //     TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     //NestedTabBar(),// Contiene la pantalla de inicio
-    HomePage(),
-    //Medicamentos(),
+    InfoEquipo(),
+    DashboardPage(),
+    PerfilUsuario()
     //Reposiciones()
   ];
 
@@ -61,23 +66,9 @@ class _BottomNavigationBarExampleState
   @override
   Widget build(BuildContext context) {
 
+    final temaActual = Provider.of<CargadorTema>(context);
+
     //final perfilUsuarioProvider = Provider.of<PerfilUsuario>(context, listen: false); // Contiene el perfil del usuario del que se muestra la información
-
-
-    // Atributo para el titulo del appbar, depende de en qué ficha nos encontremos
-    // String tituloAppBar = "";
-
-    // // Condición para determinar el título del AppBar
-    // if (_index == 0) {
-    //   tituloAppBar = 'Inicio  |  ${perfilUsuarioProvider.perfilUsuario.nombre}';
-    //   // miAppBar = ClassAppBarInicio(titleText: tituloAppBar);
-    // } else if (_index == 1) {
-    //   tituloAppBar = 'Tratamientos';
-    // } else if (_index == 2) {
-    //   tituloAppBar = 'Medicamentos';
-    // } else if (_index == 3) {
-    //   tituloAppBar = 'Reposiciones';
-    // }
 
     return Scaffold(
       
@@ -89,17 +80,28 @@ class _BottomNavigationBarExampleState
       ),
 
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed, //cambia cómo se disponen los elementos en la barra
+        backgroundColor: temaActual.temaActual.colorScheme.primary,
+        type: BottomNavigationBarType.shifting, //cambia cómo se disponen los elementos en la barra
         //backgroundColor: MisColores.colorBottomBar,
         unselectedItemColor: Colors.black,
-        //selectedItemColor: MisColores.colorAppBar,
+        selectedItemColor: temaActual.temaActual.colorScheme.onPrimary,
         unselectedLabelStyle: const TextStyle(
           color: Colors.black
         ),
-        iconSize: 32,
-        selectedFontSize: 13,
-        unselectedFontSize: 12,
+        //iconSize: 25,
+        unselectedIconTheme: const IconThemeData(size: 20),
+        selectedIconTheme: const IconThemeData(size: 25),
+        selectedFontSize: 12,
+        unselectedFontSize: 10,
         items: const[
+
+          BottomNavigationBarItem(
+            icon: Icon(Icons.groups),
+            activeIcon: Icon(
+              Icons.people
+            ),
+            label: 'Mi Equipo',
+          ),
 
           BottomNavigationBarItem(
             icon: Icon(
@@ -112,27 +114,11 @@ class _BottomNavigationBarExampleState
           ),
 
           BottomNavigationBarItem(
-            icon: Icon(Icons.medical_information_outlined),
+            icon: Icon(Icons.person),
             activeIcon: Icon(
-              Icons.medical_information_sharp
+              Icons.person
             ),
-            label: 'Tratamientos',
-          ),
-
-          BottomNavigationBarItem(
-            icon: Icon(Icons.medication_outlined),
-            activeIcon: Icon(
-              Icons.medication
-            ),
-            label: 'Medicamentos',
-          ),
-
-          BottomNavigationBarItem(
-            icon: Icon(Icons.autorenew_outlined),
-            activeIcon: Icon(
-              Icons.autorenew
-            ),
-            label: 'Reposiciones',
+            label: 'Perfil',
           ),
         ],
 
